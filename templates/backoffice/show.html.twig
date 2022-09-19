@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Home
+{% endblock %}
+
+{% block body %}
+	<h1>Detail du plat</h1>
+	<div>
+		<article>{{plat.nom}}</article>
+		<p>
+			<a href="{{path('app_editPlat' ,{id: plat.id})}}">Editer le plat</a>
+		</p>
+	</div>
+{% endblock %}

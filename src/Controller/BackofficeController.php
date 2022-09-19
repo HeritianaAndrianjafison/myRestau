@@ -26,11 +26,22 @@ class BackofficeController extends AbstractController
     }
 
     /**
+     * @Route("/backoffice/show/{id<[0-9]+>}", name="app_showPlat" , methods="GET")
+     */
+    public function show(Plat $plat): Response
+    {
+        return $this->render('backoffice/show.html.twig', [
+            'controller_name' => 'BackofficeController',
+            'plat' =>  $plat
+        ]);
+    }
+
+    /**
      * @Route("/backoffice/newPlat", name="app_newPlat" , methods="GET|POST")
      */
     public function create(Request $request , EntityManagerInterface $em): Response
     {
-       $form =  $this->createFormBuilder()
+       $form =  $this->createFormBuilder(new Plat)
             ->add('nom', TextType::class)
             ->add('description', TextareaType::class)
             ->add('prix', IntegerType::class)
@@ -42,22 +53,52 @@ class BackofficeController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
-            $data= $form->getData();
-            $plat = new Plat;
-            $plat->setNom($data['nom']);
-            $plat->setDescription($data['description']);
-            $plat->setPrix($data['prix']);
-            $plat->setCategorie($data['categorie']);
-            $plat->setImage($data['image']);
+            $plat= $form->getData();
             $plat->setNbrVente(0);
             $plat->setDisponible(1);
             $plat->setNote(0);
 
             $em->persist($plat);
             $em->flush();
+
+            return $this->redirectToRoute('app_backoffice');
         }
 
         return $this->render('backoffice/newPlat.html.twig', [
+            'controller_name' => 'BackofficeController',
+            'form' => $form->createView()
+        ]);
+    }
+
+     /**
+     * @Route("/backoffice/editPlat/{id<[0-9]+>}", name="app_editPlat" , methods="GET|POST")
+     */
+    public function edit(Plat $plat , Request $request ,EntityManagerInterface $em): Response
+    {
+        $form =  $this->createFormBuilder($plat)
+            ->add('nom', TextType::class)
+            ->add('description', TextareaType::class)
+            ->add('prix', IntegerType::class)
+            ->add('image', TextType::class)
+            ->add('categorie', IntegerType::class )
+            ->getForm()
+        ;
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $plat= $form->getData();
+            $plat->setNbrVente(0);
+            $plat->setDisponible(1);
+            $plat->setNote(0);
+
+            $em->flush();
+
+            return $this->redirectToRoute('app_backoffice');
+        }
+
+        return $this->render('backoffice/editPlat.html.twig', [
             'controller_name' => 'BackofficeController',
             'form' => $form->createView()
         ]);
