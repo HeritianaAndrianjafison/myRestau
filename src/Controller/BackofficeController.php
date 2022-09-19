@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Plat;
+use App\Form\PlatType;
 use App\Repository\PlatRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,16 +41,9 @@ class BackofficeController extends AbstractController
      * @Route("/backoffice/newPlat", name="app_newPlat" , methods="GET|POST")
      */
     public function create(Request $request , EntityManagerInterface $em): Response
-    {
-       $form =  $this->createFormBuilder(new Plat)
-            ->add('nom', TextType::class)
-            ->add('description', TextareaType::class)
-            ->add('prix', IntegerType::class)
-            ->add('image', TextType::class)
-            ->add('categorie', IntegerType::class )
-            ->getForm()
-        ;
-
+    { 
+        $plat = new Plat;
+        $form =  $this->createForm(PlatType::class , $plat);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
@@ -75,15 +69,7 @@ class BackofficeController extends AbstractController
      */
     public function edit(Plat $plat , Request $request ,EntityManagerInterface $em): Response
     {
-        $form =  $this->createFormBuilder($plat)
-            ->add('nom', TextType::class)
-            ->add('description', TextareaType::class)
-            ->add('prix', IntegerType::class)
-            ->add('image', TextType::class)
-            ->add('categorie', IntegerType::class )
-            ->getForm()
-        ;
-
+        $form =  $this->createForm(PlatType::class ,$plat );   
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
