@@ -65,11 +65,13 @@ class BackofficeController extends AbstractController
     }
 
      /**
-     * @Route("/backoffice/editPlat/{id<[0-9]+>}", name="app_editPlat" , methods="GET|POST")
+     * @Route("/backoffice/editPlat/{id<[0-9]+>}", name="app_editPlat" , methods="GET|PUT")
      */
     public function edit(Plat $plat , Request $request ,EntityManagerInterface $em): Response
     {
-        $form =  $this->createForm(PlatType::class ,$plat );   
+        $form =  $this->createForm(PlatType::class , $plat , [
+            'method' => 'PUT'
+        ]);   
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
@@ -88,5 +90,15 @@ class BackofficeController extends AbstractController
             'controller_name' => 'BackofficeController',
             'form' => $form->createView()
         ]);
+    }
+
+     /**
+     * @Route("/backoffice/deletePlat/{id<[0-9]+>}", name="app_deletePlat" , methods="GET|DELETE")
+     */
+    public function delete(Plat $plat  ,EntityManagerInterface $em): Response
+    {
+        $em->remove($plat);
+        $em->flush();
+        return $this->redirectToRoute('app_backoffice');
     }
 }
