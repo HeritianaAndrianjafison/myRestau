@@ -37,7 +37,6 @@ class Plat
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
      * @Vich\UploadableField(mapping="plat_image", fileNameProperty="image")
-     *
      * @var File|null
      */
     private $imageFile;
